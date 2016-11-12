@@ -27,19 +27,16 @@ into JSON by Jackson and then JSON String can be serialized into bytes. If we ar
 object and if it fails we can throw up.
 
 ##Grabber Client
-GClient **will** provide a easy to use API which will **loan the objects** to application code. 
-GClient **may** have to provide acknowledgment for saving the data.
-GClient **may** have to provide real time sync mechanism. That is no buffering on application server.
-GClient **may** have to provide callback/promises, this can be handled by application in start though.
-GClient **may** have to be configurable, so that it can handle different type of loads. **(Abstract)**
-GClients can be written in different languages and **will** support different platforms and thus the underlying data storage should have drivers
-for popular server side languages and must be available on different platforms.
-GClient **may** provide feature to send requests to AServer or DServer and not only to GServer. This will allow GClient to be used as a buffer/shock
-absorber for AServer and to communicate with other systems with retry. AServer should then provide sender object as a Consumer. **(Abstract)**
+- GClient **will** provide a easy to use API which will **loan the objects** to application code. 
+- GClient **may** have to provide acknowledgment for saving the data.
+- GClient **may** have to provide real time sync mechanism. That is no buffering on application server.
+- GClient **may** have to provide callback/promises, this can be handled by application in start though.
+- GClient **may** have to be configurable, so that it can handle different type of loads. **(Abstract)**
+- GClients can be written in different languages and **will** support different platforms and thus the underlying data storage should have drivers for popular server side languages and must be available on different platforms.
+- GClient **may** provide feature to send requests to AServer or DServer and not only to GServer. This will allow GClient to be used as a buffer/shock absorber for AServer and to communicate with other systems with retry. AServer should then provide sender object as a Consumer. **(Abstract)**
 
 ###Configuration
-GClient will require GServer configuration. As there could be receivers other then GServer and different protocols may have to be supported, GClient
-will have a default implementation and a builder which can be used to customize GClient's behavior. 
+GClient will require GServer configuration. As there could be receivers other then GServer and different protocols may have to be supported, GClient will have a default implementation and a builder which can be used to customize GClient's behavior. 
 
 e.g. GClient can receive a TCP or UDP based GSender. The connection will be maintained by AServer. 
 
@@ -67,8 +64,6 @@ It should take a GRequest and GConnection and return a GResponse.
 
 ###Basic Design
 GClient will have a queue based storage. It will buffer the messages to be routed 
-
-
 
 
 ##Grabber Server
