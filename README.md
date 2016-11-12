@@ -16,8 +16,10 @@ will not provide any default serialization i.e. `Map<Object, Object>` will not b
 
 AServer should be able to create a new GMessage and fill headers and body. 
 
+```java
 GMessage message = new GMessage();
 message.addHeader(key, value);
+```
   
 GMessage must handle encoding. This is important to handle different locales. This is because client may use Grabber to persist actual data.
 This can be required say for debugging or replaying a session. _**UTF-8** will be the default encoding or could it be **unicode**?_
