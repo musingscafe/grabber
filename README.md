@@ -2,13 +2,13 @@
 A data collector which allows application servers to push data downstream servers without impacting application performance.
  
 #Conventions
-Will - P0
-May - P1
-Grabber Client - GClient
-Grabber Server - GServer
-Application Server - Application, AServer
-Downstream Service and Storage - DService, DStorage
-Grabber Message - GMessage
+- Will - P0
+- May - P1
+- Grabber Client - GClient
+- Grabber Server - GServer
+- Application Server - Application, AServer
+- Downstream Service and Storage - DService, DStorage
+- Grabber Message - GMessage
 
 ##Grabber Message
 GMessage will have header and body, similar to HTTP. Header will be a dictionary/map e.g. `Map<String, String>`. In the first version GClient
