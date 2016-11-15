@@ -1,4 +1,4 @@
-package com.musingscafe.grabbercore;
+package com.musingscafe.grabber.core;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

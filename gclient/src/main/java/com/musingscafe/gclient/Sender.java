@@ -1,5 +1,6 @@
 package com.musingscafe.gclient;
 
+import com.musingscafe.grabber.core.GrabberRepository;
 import org.rocksdb.ColumnFamilyHandle;
 import org.rocksdb.RocksIterator;
 

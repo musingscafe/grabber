@@ -1,6 +1,7 @@
 package com.musingscafe.gclient;
 
-import com.musingscafe.grabber.GrabberMessage;
+import com.musingscafe.grabber.core.GrabberMessage;
+import com.musingscafe.grabber.core.ChannelConfig;
 
 import java.util.ArrayList;
 import java.util.Scanner;

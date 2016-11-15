@@ -1,6 +1,5 @@
-package com.musingscafe.gclient;
+package com.musingscafe.grabber.core;
 
-import com.musingscafe.grabber.GrabberMessage;
 import org.apache.commons.lang.SerializationUtils;
 import org.rocksdb.*;
 
@@ -10,11 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Created by ayadav on 11/12/16.
+ * Created by ayadav on 11/15/16.
  */
-
 //TODO: Can we abstract better
-class GrabberRepository implements Closeable {
+public class GrabberRepository implements Closeable {
     private final ColumnFamilyDescriptor grabberColumnFamilyDescriptor = new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, new ColumnFamilyOptions());
     private final List<ColumnFamilyDescriptor> columnFamilyDescriptors = new ArrayList<>();
     private final List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>();
@@ -67,7 +65,7 @@ class GrabberRepository implements Closeable {
 
     public RocksIterator readColumn(String channelIdentifier){
         RocksIterator iterator = database.newIterator(columnFamilyHandleMap.get(channelIdentifier),
-                                            new ReadOptions().setTailing(true).setFillCache(false));
+                new ReadOptions().setTailing(true).setFillCache(false));
 
         return iterator;
     }
@@ -76,7 +74,7 @@ class GrabberRepository implements Closeable {
         //TODO: no check
         for (int i = 0; i < channelConfigs.size(); i++) {
             columnFamilyHandleMap.put(channelConfigs.get(i).getChannelIdentifier(),
-                                                                    columnFamilyHandles.get(i));
+                    columnFamilyHandles.get(i));
         }
     }
 

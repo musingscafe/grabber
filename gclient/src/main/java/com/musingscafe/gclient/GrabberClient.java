@@ -1,5 +1,8 @@
 package com.musingscafe.gclient;
 
+import com.musingscafe.grabber.core.ChannelConfig;
+import com.musingscafe.grabber.core.GrabberRepository;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;

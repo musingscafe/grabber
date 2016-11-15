@@ -1,4 +1,4 @@
-package com.musingscafe.grabber;
+package com.musingscafe.grabber.core;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -7,9 +7,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by ayadav on 11/12/16.
+ * Created by ayadav on 11/15/16.
  */
-public class GrabberMessage implements Serializable{
+public class GrabberMessage implements Serializable {
     private static final String DEFAULT_ENCODING = "UTF-8";
     private final Map<String, String> messageHeaders = new HashMap<String, String>();
     private final List<String> reservedHeaders = new ArrayList<String>(){{
@@ -28,17 +28,17 @@ public class GrabberMessage implements Serializable{
 
     public List<String> getHeaderNames(){
         return messageHeaders.keySet()
-                        .stream()
-                        .map(e -> e)
-                        .collect(Collectors.toList());
+                .stream()
+                .map(e -> e)
+                .collect(Collectors.toList());
     }
 
     public String getHeader(String key){
         Optional<String> value = messageHeaders.entrySet()
-                                        .stream()
-                                        .filter(entry -> entry.getKey().equals(key))
-                                        .map(entry -> entry.getValue())
-                                        .findFirst();
+                .stream()
+                .filter(entry -> entry.getKey().equals(key))
+                .map(entry -> entry.getValue())
+                .findFirst();
         if(value.isPresent()){
             return value.get();
         }

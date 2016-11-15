@@ -1,7 +1,7 @@
-package com.musingscafe.gclient;
+package com.musingscafe.grabber.core;
 
 /**
- * Created by ayadav on 11/12/16.
+ * Created by ayadav on 11/15/16.
  */
 public class ChannelConfig {
     private final String channelIdentifier;
