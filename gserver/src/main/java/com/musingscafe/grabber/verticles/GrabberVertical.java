@@ -2,11 +2,14 @@ package com.musingscafe.grabber.verticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.handler.sockjs.BridgeEventType;
+import io.vertx.ext.web.handler.sockjs.BridgeOptions;
+import io.vertx.ext.web.handler.sockjs.PermittedOptions;
+import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 
 /**
  * Created by ayadav on 11/14/16.
@@ -14,6 +17,7 @@ import io.vertx.core.http.HttpServerResponse;
 public class GrabberVertical extends AbstractVerticle {
 
     private HttpServer httpServer;
+    private Router router;
 
     @Override
     public void start(Future<Void> startFuture){
@@ -21,18 +25,38 @@ public class GrabberVertical extends AbstractVerticle {
         httpServerOptions.setPort(8888);
 
         httpServer = vertx.createHttpServer(httpServerOptions);
+        router = Router.router(vertx);
 
-        httpServer.requestHandler(httpServerRequest -> {
+        BridgeOptions options = new BridgeOptions().addOutboundPermitted(new PermittedOptions().setAddress("news-feed"));
 
-            httpServerRequest.response().end("<h1>Hey World</h1>");
-        }).listen(8888, result -> {
-            if(result.succeeded()){
-                startFuture.complete();
+        router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options, event -> {
+
+            // You can also optionally provide a handler like this which will be passed any events that occur on the bridge
+            // You can use this for monitoring or logging, or to change the raw messages in-flight.
+            // It can also be used for fine grained access control.
+
+            if (event.type() == BridgeEventType.SOCKET_CREATED) {
+                System.out.println("A socket was created");
             }
-            else {
-                startFuture.fail(result.cause());
-            }
+
+            // This signals that it's ok to process the event
+            event.complete(true);
+
+        }));
+
+        // Serve the static resources
+        router.route("/static/*").handler(StaticHandler.create().setWebRoot("webroot/static"));
+
+        router.route("/").handler(routingContext -> {
+            routingContext.response().sendFile("webroot/index.html");
         });
+
+        router.route("/v2").handler(routingContext -> {
+            vertx.eventBus().publish("news-feed", "news from the server!");
+            routingContext.response().end("Vertx v2 - Hello World");
+        });
+
+        httpServer.requestHandler(router::accept).listen(8888);
         System.out.println("starting grabber server");
     }
 
