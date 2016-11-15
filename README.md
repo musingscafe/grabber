@@ -22,11 +22,10 @@ message.addHeader(key, value);
 ```
   
 GMessage must handle encoding. This is important to handle different locales. This is because client may use Grabber to persist actual data.
-This can be required say for debugging or replaying a session. _**UTF-8** will be the default encoding or could it be **unicode**?_
+This can be required say for debugging or replaying a session. _**UTF-8** will be the default encoding.
 
 GMessage's body should be a serializable object. i.e. for Java it must implement Serializable. **(Abstract)** As a simple POJO can be serialized 
-into JSON by Jackson and then JSON String can be serialized into bytes. If we are providing serializer support then we can just try serializing the
-object and if it fails we can throw up.
+into JSON by Jackson and then JSON String can be serialized into bytes. If we are providing serializer support then we can just try serializing the object and if it fails we can throw up.
 
 ##Grabber Client
 - GClient **will** provide a easy to use API which will **loan the objects** to application code. 
