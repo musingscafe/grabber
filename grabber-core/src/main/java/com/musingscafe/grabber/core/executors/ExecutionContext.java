@@ -42,7 +42,7 @@ public class ExecutionContext {
     }
 
     private void setUpRepository() {
-        repository = new GrabberRepository(databasePath, channelConfigs);
+        repository = new GrabberRepository(databasePath, channelConfigs, defaultSerializer);
     }
 
     private void setUpChannelExecutionContexts() {

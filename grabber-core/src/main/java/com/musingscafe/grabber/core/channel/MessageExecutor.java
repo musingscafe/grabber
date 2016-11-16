@@ -6,6 +6,9 @@ import com.musingscafe.grabber.core.connectors.Connector;
 import com.musingscafe.grabber.core.consumers.Consumer;
 import com.musingscafe.grabber.core.message.GrabberMessage;
 import com.musingscafe.grabber.core.message.Tuple;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -13,9 +16,11 @@ import java.util.List;
  */
 public class MessageExecutor implements MessageCompletionHandler {
     private final ChannelExecutionContext channelExecutionContext;
+    private final List<String> deletionQueue;
 
-    public MessageExecutor(ChannelExecutionContext channelExecutionContext) {
+    public MessageExecutor(ChannelExecutionContext channelExecutionContext, List<String> deletionQueue) {
         this.channelExecutionContext = channelExecutionContext;
+        this.deletionQueue = deletionQueue;
     }
 
     @Override
@@ -24,7 +29,8 @@ public class MessageExecutor implements MessageCompletionHandler {
         GrabberRepository repository = channelExecutionContext.getRepository();
         String identifier = channelExecutionContext.getChannelIdentifier();
 
-        repository.remove(identifier, serializer.serialize(messageExecutionContext.getMessageId()));
+        deletionQueue.add(messageExecutionContext.getMessageId());
+        //repository.saveToDefaultColumn(messageExecutionContext.getMessageId());
     }
 
 

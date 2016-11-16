@@ -1,9 +1,16 @@
 package com.musingscafe.grabber.core.channel;
 
+import com.musingscafe.grabber.core.GrabberRepository;
 import com.musingscafe.grabber.core.KeyValuePair;
 import com.musingscafe.grabber.core.Producer;
 import com.musingscafe.grabber.core.message.GrabberMessage;
+import org.rocksdb.ColumnFamilyHandle;
+import org.rocksdb.RocksIterator;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +22,7 @@ public class ChannelExecutor {
     private final ChannelExecutionContext channelExecutionContext;
     private MessageExecutor messageExecutor;
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private List<String> deletionQueue = new LinkedList<>();
 
     public ChannelExecutor(ChannelExecutionContext channelExecutionContext) {
         this.channelExecutionContext = channelExecutionContext;
@@ -29,7 +37,7 @@ public class ChannelExecutor {
     }
 
     private MessageExecutor newMessageExecutor() {
-        return new MessageExecutor(this.channelExecutionContext);
+        return new MessageExecutor(this.channelExecutionContext, deletionQueue);
     }
 
     //write to db
@@ -40,11 +48,26 @@ public class ChannelExecutor {
     private void produce(){
         Producer producer = channelExecutionContext.getProducer();
 
-        while (producer.hasNext()){
-            KeyValuePair keyValuePair = producer.next();
+        List<KeyValuePair> list = producer.getBatch();
 
+        for (KeyValuePair keyValuePair: list) {
             //submit
             messageExecutor.handle(keyValuePair.getKey() ,keyValuePair.getValue());
+        }
+
+
+        GrabberRepository repository = channelExecutionContext.getRepository();
+//        ColumnFamilyHandle columnFamilyHandle = repository.getDefaultColumnFamilyHandle();
+//        RocksIterator iterator = repository.readColumn(columnFamilyHandle);
+
+        //iterator.seekToFirst();
+        int i = 0;
+        while (!deletionQueue.isEmpty()){
+            String key = deletionQueue.remove(i);
+//            System.out.println("DQ : " + key);
+//            System.out.print("DQ : ");
+//            System.out.println(key.getBytes(StandardCharsets.ISO_8859_1));
+            repository.remove(channelExecutionContext.getChannelIdentifier(), key.getBytes(StandardCharsets.ISO_8859_1));
         }
     }
 }

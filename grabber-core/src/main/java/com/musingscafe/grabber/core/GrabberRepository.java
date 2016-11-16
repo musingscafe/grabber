@@ -8,6 +8,7 @@ import org.rocksdb.*;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -24,10 +25,12 @@ public class GrabberRepository implements Closeable {
     private final List<ChannelConfig> channelConfigs;
     private final String databasePath;
     private ColumnFamilyHandle defaultColumnFamilyHandle;
+    private Serializer serializer;
 
-    public GrabberRepository(String databasePath, List<ChannelConfig> channelConfigs){
+    public GrabberRepository(String databasePath, List<ChannelConfig> channelConfigs, Serializer serializer){
         this.channelConfigs = channelConfigs;
         this.databasePath = databasePath;
+        this.serializer = serializer;
 
         setupDBOptions();
         setUpChannels();
@@ -46,18 +49,30 @@ public class GrabberRepository implements Closeable {
     }
 
     public void save(String channelIdentifier, GrabberMessage message) {
-        String rId = UUID.randomUUID().toString();
-        System.out.println(rId);
-
+//        String random = randomString();
+//        System.out.println(random);
+//        System.out.println(random.getBytes(StandardCharsets.ISO_8859_1));
         try {
             database.put(columnFamilyHandleMap.get(channelIdentifier),
                     new WriteOptions(),
-                    UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8),
-                    SerializationUtils.serialize(message));
+                    randomString().getBytes(StandardCharsets.ISO_8859_1),
+                    serializer.serialize(message));
 
         } catch (RocksDBException e) {
             e.printStackTrace();
         }
+    }
+
+    private String randomString(){
+        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 20; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            sb.append(c);
+        }
+        String output = sb.toString();
+        return output;
     }
 
     public void remove(String channelIdentifier, byte[] key){
@@ -70,6 +85,13 @@ public class GrabberRepository implements Closeable {
 
     public RocksIterator readColumn(String channelIdentifier){
         RocksIterator iterator = database.newIterator(columnFamilyHandleMap.get(channelIdentifier),
+                new ReadOptions().setTailing(true).setFillCache(false));
+
+        return iterator;
+    }
+
+    public RocksIterator readColumn(ColumnFamilyHandle columnFamilyHandle){
+        RocksIterator iterator = database.newIterator(columnFamilyHandle,
                 new ReadOptions().setTailing(true).setFillCache(false));
 
         return iterator;
@@ -103,7 +125,7 @@ public class GrabberRepository implements Closeable {
     }
 
     private ColumnFamilyDescriptor newColumnFamilyDescriptor(String descriptorName){
-        return new ColumnFamilyDescriptor(descriptorName.getBytes(StandardCharsets.UTF_8), new ColumnFamilyOptions());
+        return new ColumnFamilyDescriptor(descriptorName.getBytes(StandardCharsets.ISO_8859_1), new ColumnFamilyOptions());
     }
 
     @Override
@@ -113,5 +135,17 @@ public class GrabberRepository implements Closeable {
         }
 
         dbOptions.close();
+    }
+
+
+    public void saveToDefaultColumn(String key){
+        try {
+            database.put(defaultColumnFamilyHandle, new WriteOptions(), key.getBytes(StandardCharsets.ISO_8859_1), key.getBytes(StandardCharsets.ISO_8859_1));
+        } catch (RocksDBException e) {
+            e.printStackTrace();
+        }
+    }
+    public ColumnFamilyHandle getDefaultColumnFamilyHandle() {
+        return defaultColumnFamilyHandle;
     }
 }
