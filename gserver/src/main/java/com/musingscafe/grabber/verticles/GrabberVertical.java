@@ -29,6 +29,10 @@ public class GrabberVertical extends AbstractVerticle {
 
         BridgeOptions options = new BridgeOptions().addOutboundPermitted(new PermittedOptions().setAddress("news-feed"));
 
+        router.route("/gmessage").handler(routingContext -> {
+            routingContext.getBody();
+        });
+
         router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options, event -> {
 
             // You can also optionally provide a handler like this which will be passed any events that occur on the bridge

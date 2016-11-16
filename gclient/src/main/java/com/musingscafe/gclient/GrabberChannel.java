@@ -1,7 +1,7 @@
 package com.musingscafe.gclient;
 
-import com.musingscafe.grabber.core.ChannelConfig;
-import com.musingscafe.grabber.core.GrabberMessage;
+import com.musingscafe.grabber.core.channel.ChannelConfig;
+import com.musingscafe.grabber.core.message.GrabberMessage;
 
 /**
  * Created by ayadav on 11/12/16.

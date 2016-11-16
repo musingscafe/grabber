@@ -1,4 +1,4 @@
-package com.musingscafe.grabber.core;
+package com.musingscafe.grabber.core.message;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -11,10 +11,20 @@ import java.util.stream.Collectors;
  */
 public class GrabberMessage implements Serializable {
     private static final String DEFAULT_ENCODING = "UTF-8";
-    private final Map<String, String> messageHeaders = new HashMap<String, String>();
+    private Map<String, String> messageHeaders = new HashMap<String, String>();
     private final List<String> reservedHeaders = new ArrayList<String>(){{
         add("identifier");
     }};
+
+    private Tuple content;
+
+    public Tuple getContent() {
+        return content;
+    }
+
+    public void setContent(Tuple content) {
+        this.content = content;
+    }
 
     private byte[] body;
 
@@ -53,15 +63,24 @@ public class GrabberMessage implements Serializable {
         messageHeaders.put(key, value);
     }
 
-    private boolean isValid(String key){
-        if(StringUtils.isEmpty(key)){
+    private boolean isValid(String key) {
+        if (StringUtils.isEmpty(key)) {
             return false;
         }
 
-        if(reservedHeaders.contains(key)){
+        if (reservedHeaders.contains(key)) {
             return false;
         }
 
         return true;
+    }
+
+    public Map<String, String> getMessageHeaders() {
+        return messageHeaders;
+    }
+
+    //TODO: no validation
+    public void setMessageHeaders(Map<String, String> headers){
+        messageHeaders = headers;
     }
 }

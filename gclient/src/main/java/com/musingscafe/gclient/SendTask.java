@@ -7,6 +7,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by ayadav on 11/13/16.
@@ -35,8 +36,10 @@ public class SendTask implements Runnable {
             ByteArrayEntity entity = new ByteArrayEntity(message);
             httpPost.setEntity(entity);
 
+            httpPost.addHeader("iteratorKey", new String(this.key, StandardCharsets.UTF_8));
+
             try(CloseableHttpResponse closeableHttpResponse = httpclient.execute(httpPost)){
-                System.out.println(closeableHttpResponse.getStatusLine());
+                //System.out.println(closeableHttpResponse.getStatusLine());
 
                 if (closeableHttpResponse.getStatusLine().getStatusCode() == 200){
                     callable.onTaskCompletion(identifier, key,  true);

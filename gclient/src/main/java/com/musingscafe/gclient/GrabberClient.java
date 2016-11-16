@@ -1,7 +1,7 @@
 package com.musingscafe.gclient;
 
-import com.musingscafe.grabber.core.ChannelConfig;
 import com.musingscafe.grabber.core.GrabberRepository;
+import com.musingscafe.grabber.core.channel.ChannelConfig;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -52,14 +52,14 @@ public class GrabberClient implements Closeable{
         Executors.newFixedThreadPool(1).submit(() -> client.sender.startServer());
 
         for (ChannelConfig channelConfig: client.channelConfigs){
-            GrabberDispatcher grabberDispatcher = new GrabberDispatcher(client.serverConfig, channelConfig.getPoolSize(), client.grabberRepository);
+            GrabberDispatcher grabberDispatcher = new GrabberDispatcher(client.serverConfig, client.grabberRepository);
             client.channelMap.put(channelConfig.getChannelIdentifier(), new GrabberChannel(channelConfig, grabberDispatcher));
         }
     }
 
     public static GrabberClient open(ServerConfig serverConfig){
         List<ChannelConfig> channelConfigs = new ArrayList<>();
-        channelConfigs.add(new ChannelConfig(DEFAULT_CHANNEL, POOL_SIZE));
+        channelConfigs.add(new ChannelConfig(DEFAULT_CHANNEL));
         return open(serverConfig, channelConfigs, DB_PATH);
     }
 
@@ -79,7 +79,7 @@ public class GrabberClient implements Closeable{
             }
         }
         if(!exists){
-            client.channelConfigs.add(new ChannelConfig(DEFAULT_CHANNEL, POOL_SIZE));
+            client.channelConfigs.add(new ChannelConfig(DEFAULT_CHANNEL));
         }
     }
 

@@ -47,7 +47,7 @@ public class Sender implements Closeable, Callable{
 
             RocksIterator iterator = grabberRepository.readColumn(entry.getKey());
             iterator.seekToFirst();
-            while (iterator.isValid() || batchCount >= 10){
+            while (iterator.isValid()){ //|| batchCount >= 10){
                 tasks.add(new SendTask(serverConfig.getUrlString(), iterator.key(), iterator.value(), entry.getKey(), this));
                 iterator.next();
                 batchCount++;
@@ -58,6 +58,12 @@ public class Sender implements Closeable, Callable{
             tasks.stream()
                     .forEach(executorService::submit);
 
+            //slow it down so that we get delete call while we are still iterating
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

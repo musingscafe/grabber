@@ -1,5 +1,7 @@
 package com.musingscafe.grabber.core;
 
+import com.musingscafe.grabber.core.channel.ChannelConfig;
+import com.musingscafe.grabber.core.message.GrabberMessage;
 import org.apache.commons.lang.SerializationUtils;
 import org.rocksdb.*;
 
@@ -44,10 +46,13 @@ public class GrabberRepository implements Closeable {
     }
 
     public void save(String channelIdentifier, GrabberMessage message) {
+        String rId = UUID.randomUUID().toString();
+        System.out.println(rId);
+
         try {
             database.put(columnFamilyHandleMap.get(channelIdentifier),
                     new WriteOptions(),
-                    UUID.randomUUID().toString().getBytes(),
+                    UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8),
                     SerializationUtils.serialize(message));
 
         } catch (RocksDBException e) {
