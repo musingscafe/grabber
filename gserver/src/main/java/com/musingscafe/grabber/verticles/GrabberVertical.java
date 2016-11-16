@@ -1,15 +1,20 @@
 package com.musingscafe.grabber.verticles;
 
+import com.musingscafe.grabber.core.Employee;
+import com.musingscafe.grabber.core.message.GrabberMessage;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.BridgeEventType;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.ext.web.handler.sockjs.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import org.apache.commons.lang.SerializationUtils;
 
 /**
  * Created by ayadav on 11/14/16.
@@ -22,15 +27,24 @@ public class GrabberVertical extends AbstractVerticle {
     @Override
     public void start(Future<Void> startFuture){
         HttpServerOptions httpServerOptions = new HttpServerOptions();
-        httpServerOptions.setPort(8888);
+        httpServerOptions.setPort(8084);
 
         httpServer = vertx.createHttpServer(httpServerOptions);
         router = Router.router(vertx);
 
         BridgeOptions options = new BridgeOptions().addOutboundPermitted(new PermittedOptions().setAddress("news-feed"));
 
-        router.route("/gmessage").handler(routingContext -> {
-            routingContext.getBody();
+        router.route().handler(BodyHandler.create());
+        router.post("/gmessage").handler(routingContext -> {
+             Buffer buffer = routingContext.getBody();
+
+            byte[] bytes = buffer.getBytes();
+
+            GrabberMessage message = (GrabberMessage) SerializationUtils.deserialize(bytes);
+            Employee employee = message.getContent().getObject(0, Employee.class);
+            System.out.println(employee.getName());
+
+            routingContext.response().end("received");
         });
 
         router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options, event -> {
@@ -60,7 +74,7 @@ public class GrabberVertical extends AbstractVerticle {
             routingContext.response().end("Vertx v2 - Hello World");
         });
 
-        httpServer.requestHandler(router::accept).listen(8888);
+        httpServer.requestHandler(router::accept).listen(8084);
         System.out.println("starting grabber server");
     }
 
