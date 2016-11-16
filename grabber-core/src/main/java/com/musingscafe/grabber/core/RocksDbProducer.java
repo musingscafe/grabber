@@ -51,11 +51,6 @@ public class RocksDbProducer implements Producer, Closeable{
         byte[] key = iterator.key();
         byte[] value = iterator.value();
 
-//        System.out.print("kv:  ");
-//        System.out.println(key);
-//        System.out.print("kv: ");
-//        System.out.println(new String(key, StandardCharsets.ISO_8859_1));
-
         keyValuePair.setKey(new String(key, StandardCharsets.ISO_8859_1));
         keyValuePair.setValue((GrabberMessage) serializer.deserialize(value));
         keyValuePair.setHasValue(true);

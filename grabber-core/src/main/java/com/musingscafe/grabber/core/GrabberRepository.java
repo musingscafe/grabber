@@ -49,9 +49,7 @@ public class GrabberRepository implements Closeable {
     }
 
     public void save(String channelIdentifier, GrabberMessage message) {
-//        String random = randomString();
-//        System.out.println(random);
-//        System.out.println(random.getBytes(StandardCharsets.ISO_8859_1));
+
         try {
             database.put(columnFamilyHandleMap.get(channelIdentifier),
                     new WriteOptions(),

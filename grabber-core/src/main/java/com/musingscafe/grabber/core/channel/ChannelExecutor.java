@@ -57,16 +57,9 @@ public class ChannelExecutor {
 
 
         GrabberRepository repository = channelExecutionContext.getRepository();
-//        ColumnFamilyHandle columnFamilyHandle = repository.getDefaultColumnFamilyHandle();
-//        RocksIterator iterator = repository.readColumn(columnFamilyHandle);
-
-        //iterator.seekToFirst();
         int i = 0;
         while (!deletionQueue.isEmpty()){
             String key = deletionQueue.remove(i);
-//            System.out.println("DQ : " + key);
-//            System.out.print("DQ : ");
-//            System.out.println(key.getBytes(StandardCharsets.ISO_8859_1));
             repository.remove(channelExecutionContext.getChannelIdentifier(), key.getBytes(StandardCharsets.ISO_8859_1));
         }
     }
