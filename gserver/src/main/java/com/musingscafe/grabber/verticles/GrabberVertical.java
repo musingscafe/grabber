@@ -5,6 +5,7 @@ import com.musingscafe.grabber.core.message.GrabberMessage;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
@@ -23,6 +24,7 @@ public class GrabberVertical extends AbstractVerticle {
 
     private HttpServer httpServer;
     private Router router;
+    private EventBus eventBus;
 
     @Override
     public void start(Future<Void> startFuture){
@@ -31,6 +33,8 @@ public class GrabberVertical extends AbstractVerticle {
 
         httpServer = vertx.createHttpServer(httpServerOptions);
         router = Router.router(vertx);
+        eventBus = vertx.eventBus();
+
 
         BridgeOptions options = new BridgeOptions().addOutboundPermitted(new PermittedOptions().setAddress("news-feed"));
 
@@ -43,6 +47,8 @@ public class GrabberVertical extends AbstractVerticle {
             GrabberMessage message = (GrabberMessage) SerializationUtils.deserialize(bytes);
             Employee employee = message.getContent().getObject(0, Employee.class);
             System.out.println(employee.getName());
+
+            //eventBus.publish("grabber-message-feed", bytes);
 
             routingContext.response().end("received");
         });
