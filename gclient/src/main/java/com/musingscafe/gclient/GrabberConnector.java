@@ -1,4 +1,4 @@
-package com.musingscafe.newclient;
+package com.musingscafe.gclient;
 
 import com.musingscafe.gclient.ServerConfig;
 import com.musingscafe.grabber.core.channel.ChannelExecutionContext;

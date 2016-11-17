@@ -15,8 +15,6 @@ import java.util.List;
  */
 public class NewClient implements Closeable {
     private static final NewClient client = new NewClient();
-    public static final String DEFAULT_CHANNEL = "grabber.default.channel";
-    public static final int POOL_SIZE = 10;
     public static String DB_PATH = "grabber.db";
     private ServerConfig serverConfig;
     private String dbPath;
@@ -26,12 +24,10 @@ public class NewClient implements Closeable {
     private NewClient(){
     }
 
-    public static NewClient open(ServerConfig serverConfig, List<Channel> channels, String dbPath){
-        assert(serverConfig != null);
+    public static NewClient open(List<Channel> channels, String dbPath){
         assert(channels != null);
         assert(channels.size() > 0);
 
-        client.serverConfig = serverConfig;
         client.dbPath = dbPath;
 
         setupEnvironment(channels, dbPath);

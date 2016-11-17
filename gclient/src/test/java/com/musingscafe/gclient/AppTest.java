@@ -8,7 +8,6 @@ import com.musingscafe.grabber.core.consumers.Consumer;
 import com.musingscafe.grabber.core.consumers.PassThroughConsumer;
 import com.musingscafe.grabber.core.message.GrabberMessage;
 import com.musingscafe.grabber.core.message.Tuple;
-import com.musingscafe.newclient.GrabberConnector;
 import com.musingscafe.newclient.NewClient;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -16,7 +15,6 @@ import junit.framework.TestSuite;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -61,7 +59,7 @@ public class AppTest
         Channel channel = builder.setChannelIdentifier("user").setConnector(new GrabberConnector(serverConfig))
                 .setConsumers(new ArrayList<Consumer>(){{ add(new PassThroughConsumer());}}).build();
 
-        NewClient.open(serverConfig, new ArrayList<Channel>(){{add(channel);}}, NewClient.DB_PATH);
+        NewClient.open(new ArrayList<Channel>(){{add(channel);}}, NewClient.DB_PATH);
 
         send(channel);
 
