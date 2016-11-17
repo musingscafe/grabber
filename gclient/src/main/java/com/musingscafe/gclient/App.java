@@ -1,5 +1,7 @@
 package com.musingscafe.gclient;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.musingscafe.grabber.core.Employee;
 import com.musingscafe.grabber.core.channel.Channel;
 import com.musingscafe.grabber.core.channel.ChannelBuilder;
@@ -54,14 +56,12 @@ public class App
         employee.setId(1);
         employee.setName(UUID.randomUUID().toString());
 
-        Field field = new Field(employee);
-        LinkedHashMap<String, Field> fields = new LinkedHashMap<>();
-        fields.put("employee", field);
+        LinkedHashMap<String, Object> fields = new LinkedHashMap<>();
+        fields.put("employee", employee);
         Tuple tuple = new Tuple(fields);
 
         GrabberMessage message = new GrabberMessage();
         message.setContent(tuple);
         grabberChannel.write(message);
-
     }
 }

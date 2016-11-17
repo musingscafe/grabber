@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 public class GrabberMessage implements Serializable {
     private static final String DEFAULT_ENCODING = "UTF-8";
     private Map<String, String> messageHeaders = new HashMap<String, String>();
+
+    //TODO: remove restriction
     private final List<String> reservedHeaders = new ArrayList<String>(){{
         add("identifier");
     }};
@@ -24,16 +26,6 @@ public class GrabberMessage implements Serializable {
 
     public void setContent(Tuple content) {
         this.content = content;
-    }
-
-    private byte[] body;
-
-    public byte[] getBody(){
-        return body;
-    }
-
-    public void setBody(byte[] content){
-        body = content;
     }
 
     public List<String> getHeaderNames(){

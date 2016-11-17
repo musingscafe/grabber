@@ -1,7 +1,5 @@
 package com.musingscafe.grabber.core.message;
 
-import com.musingscafe.grabber.core.message.Field;
-
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,10 +10,10 @@ import java.util.stream.Collectors;
  */
 public class Tuple implements Serializable {
 
-    private final LinkedHashMap<String, Field> fieldMap;
+    private final LinkedHashMap<String, Object> fieldMap;
     private final List<String> oderedFieldKeys;
 
-    public Tuple(LinkedHashMap<String, Field> fieldMap) {
+    public Tuple(LinkedHashMap<String, Object> fieldMap) {
         this.fieldMap = fieldMap;
         this.oderedFieldKeys = fieldMap.keySet().stream().collect(Collectors.toList());
     }
@@ -34,7 +32,7 @@ public class Tuple implements Serializable {
     }
 
     private Object getObject(int index){
-        return fieldMap.get(getKey(index)).getValue();
+        return fieldMap.get(getKey(index));
     }
 
     private String getKey(int index){

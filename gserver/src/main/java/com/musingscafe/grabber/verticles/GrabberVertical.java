@@ -2,12 +2,16 @@ package com.musingscafe.grabber.verticles;
 
 import com.musingscafe.grabber.core.Employee;
 import com.musingscafe.grabber.core.message.GrabberMessage;
+import com.musingscafe.grabber.handlers.JsonRequestHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.buffer.impl.BufferImpl;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
@@ -49,6 +53,17 @@ public class GrabberVertical extends AbstractVerticle {
             System.out.println(employee.getName());
 
             //eventBus.publish("grabber-message-feed", bytes);
+
+            routingContext.response().end("received");
+        });
+
+        router.route().handler(BodyHandler.create());
+        router.post("/grabjson").handler(routingContext -> {
+
+            System.out.println(routingContext.getBodyAsString());
+
+            JsonRequestHandler requestHandler = new JsonRequestHandler();
+            requestHandler.handle(routingContext.getBody().toString());
 
             routingContext.response().end("received");
         });

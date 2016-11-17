@@ -1,6 +1,5 @@
 package com.musingscafe.newclient;
 
-import com.musingscafe.gclient.Sender;
 import com.musingscafe.gclient.ServerConfig;
 import com.musingscafe.grabber.core.GrabberRepository;
 import com.musingscafe.grabber.core.channel.Channel;
@@ -22,7 +21,6 @@ public class NewClient implements Closeable {
     private ServerConfig serverConfig;
     private String dbPath;
     private GrabberRepository grabberRepository;
-    private Sender sender;
     private Executor executor;
 
     private NewClient(){
@@ -51,6 +49,5 @@ public class NewClient implements Closeable {
     @Override
     public void close() throws IOException {
         client.grabberRepository.close();
-        client.sender.close();
     }
 }
