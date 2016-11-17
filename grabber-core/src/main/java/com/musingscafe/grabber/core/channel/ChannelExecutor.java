@@ -4,10 +4,7 @@ import com.musingscafe.grabber.core.GrabberRepository;
 import com.musingscafe.grabber.core.KeyValuePair;
 import com.musingscafe.grabber.core.Producer;
 import com.musingscafe.grabber.core.message.GrabberMessage;
-import org.rocksdb.ColumnFamilyHandle;
-import org.rocksdb.RocksIterator;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,19 +18,24 @@ import java.util.concurrent.TimeUnit;
 public class ChannelExecutor {
     private final ChannelExecutionContext channelExecutionContext;
     private MessageExecutor messageExecutor;
+    private final boolean executeSelf;
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
     private List<String> deletionQueue = new LinkedList<>();
 
-    public ChannelExecutor(ChannelExecutionContext channelExecutionContext) {
+    public ChannelExecutor(ChannelExecutionContext channelExecutionContext, boolean executeSelf) {
         this.channelExecutionContext = channelExecutionContext;
+        this.executeSelf = executeSelf;
         this.messageExecutor = newMessageExecutor();
 
-        scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                produce();
-            }
-        }, 100, 100, TimeUnit.MILLISECONDS);
+        if(executeSelf){
+            scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    produce();
+                }
+            }, 100, 100, TimeUnit.MILLISECONDS);
+        }
+
     }
 
     private MessageExecutor newMessageExecutor() {
@@ -45,7 +47,7 @@ public class ChannelExecutor {
         channelExecutionContext.getRepository().save(channelExecutionContext.getChannelIdentifier(), message);
     }
 
-    private void produce(){
+    public void produce(){
         Producer producer = channelExecutionContext.getProducer();
 
         List<KeyValuePair> list = producer.getBatch();

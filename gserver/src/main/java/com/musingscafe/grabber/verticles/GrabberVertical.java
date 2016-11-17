@@ -62,8 +62,15 @@ public class GrabberVertical extends AbstractVerticle {
 
             System.out.println(routingContext.getBodyAsString());
 
-            JsonRequestHandler requestHandler = new JsonRequestHandler();
-            requestHandler.handle(routingContext.getBody().toString());
+            vertx.executeBlocking(objectFuture -> {
+
+                JsonRequestHandler.handle(routingContext.getBody().toString());
+                objectFuture.complete();
+            }, objectAsyncResult -> {
+                //do nothing
+                System.out.println("done");
+            });
+
 
             routingContext.response().end("received");
         });

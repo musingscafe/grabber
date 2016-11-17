@@ -17,6 +17,7 @@ public class Channel {
     private Connector connector;
     private ChannelExecutionContext channelExecutionContext;
     private ChannelExecutor channelExecutor;
+    private boolean executeSelf;
     private boolean isComplete;
 
 
@@ -79,5 +80,13 @@ public class Channel {
         assert (!StringUtils.isEmpty(channelIdentifier));
 
         isComplete = true;
+    }
+
+    public boolean isExecuteSelf() {
+        return executeSelf;
+    }
+
+    public void setExecuteSelf(boolean executeSelf) {
+        this.executeSelf = executeSelf;
     }
 }

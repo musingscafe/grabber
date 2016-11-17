@@ -47,7 +47,7 @@ public class Executor {
     }
 
     private static ChannelExecutor newChannelExecutor(Channel channel) {
-        return new ChannelExecutor(channel.getChannelExecutionContext());
+        return new ChannelExecutor(channel.getChannelExecutionContext(), channel.isExecuteSelf());
     }
 
     public Channel getChannel(String key){

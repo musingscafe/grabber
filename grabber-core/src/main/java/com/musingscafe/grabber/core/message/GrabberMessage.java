@@ -49,9 +49,9 @@ public class GrabberMessage implements Serializable {
     }
 
     public void addHeader(String key, String value){
-        if(!isValid(key)){
-            throw new IllegalArgumentException("usage: null or restricted key.");
-        }
+//        if(!isValid(key)){
+//            throw new IllegalArgumentException("usage: null or restricted key.");
+//        }
         messageHeaders.put(key, value);
     }
 
