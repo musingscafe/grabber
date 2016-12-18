@@ -14,12 +14,17 @@ public class RedisCache implements ICache{
 
     //address of your redis server
     private static final String redisHost = "192.168.99.100";
-    private static final Integer redisPort = 8081;
+    private Integer redisPort = 8081;
     //the jedis connection pool..
     private static JedisPool pool = null;
 
     public RedisCache() {
         //configure our pool connection
+        pool = new JedisPool(redisHost, redisPort);
+    }
+
+    public RedisCache(int port){
+        redisPort = 8082;
         pool = new JedisPool(redisHost, redisPort);
     }
 

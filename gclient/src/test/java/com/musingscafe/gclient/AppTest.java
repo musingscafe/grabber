@@ -25,6 +25,10 @@ import java.util.UUID;
 public class AppTest 
     extends TestCase
 {
+    Channel channel;
+    Channel carChannel;
+    private boolean initDone = false;
+
     /**
      * Create the test case
      *
@@ -43,36 +47,56 @@ public class AppTest
         return new TestSuite( AppTest.class );
     }
 
-    /**
-     * Rigourous Test :-)
-     */
     public void testApp()
     {
-        System.out.println( "Hello World!" );
+        init();
+
+        send(channel);
+        //send(carChannel);
+
+        sleep();
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void init() {
+
+            ServerConfig serverConfig = getServerConfig();
+
+            ChannelBuilder builder = new ChannelBuilder();
+            channel = builder.setChannelIdentifier("user").setConnector(new GrabberConnector(serverConfig))
+                    .setConsumers(new ArrayList<Consumer>() {{
+                        add(new PassThroughConsumer());
+                    }}).build();
+
+            carChannel = builder.setChannelIdentifier("car").setConnector(new GrabberConnector(serverConfig))
+                    .setConsumers(new ArrayList<Consumer>() {{
+                        add(new PassThroughConsumer());
+                    }}).build();
+
+            GrabberClient.open(new ArrayList<Channel>() {{
+                add(channel);
+                add(carChannel);
+            }}, GrabberClient.DB_PATH);
+
+            initDone = true;
 
 
+    }
+
+
+
+    private ServerConfig getServerConfig() {
         ServerConfig serverConfig = new ServerConfig();
         serverConfig.setHost("http://localhost");
         serverConfig.setPort("8084/gmessage");
-
-        ChannelConfig channelConfig = new ChannelConfig("user");
-
-        ChannelBuilder builder = new ChannelBuilder();
-        Channel channel = builder.setChannelIdentifier("user").setConnector(new GrabberConnector(serverConfig))
-                .setConsumers(new ArrayList<Consumer>(){{ add(new PassThroughConsumer());}}).build();
-
-        GrabberClient.open(new ArrayList<Channel>(){{add(channel);}}, GrabberClient.DB_PATH);
-
-        send(channel);
-
-//        int value = 0;
-//        while (value != 2) {
-//            Scanner scanner = new Scanner(System.in);
-//            value = scanner.nextInt();
-//            for (int i = 0; i < value; i++) {
-//                send(channel);
-//            }
-//        }
+        return serverConfig;
     }
 
     private static void send(Channel grabberChannel) {

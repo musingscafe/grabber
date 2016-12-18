@@ -2,6 +2,7 @@ package com.musingscafe.grabber.connectors;
 
 import com.musingscafe.grabber.ICache;
 import com.musingscafe.grabber.RedisCache;
+import com.musingscafe.grabber.core.Employee;
 import com.musingscafe.grabber.core.channel.ChannelExecutionContext;
 import com.musingscafe.grabber.core.channel.MessageCompletionHandler;
 import com.musingscafe.grabber.core.channel.MessageExecutionContext;
@@ -14,7 +15,7 @@ import java.util.UUID;
 /**
  * Created by ayadav on 11/17/16.
  */
-public class RedisConnector implements Connector {
+public class CarConnector implements Connector {
     private ICache cache = new RedisCache();
 
     @Override
