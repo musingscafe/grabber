@@ -17,10 +17,12 @@ public class GrabberMessage <T extends Serializable> implements Serializable {
 
     private Map<String, String> messageHeaders;
     private T body;
+    private final String messageId;
 
     public GrabberMessage() {
         messageHeaders = new HashMap<>();
         setDefaultHeaders();
+        messageId = UUID.randomUUID().toString();
     }
 
     public GrabberMessage(Map<String, String> headers, T body) {
@@ -30,6 +32,7 @@ public class GrabberMessage <T extends Serializable> implements Serializable {
         setMessageHeaders(headers);
         setDefaultHeaders();
         this.body = body;
+        messageId = UUID.randomUUID().toString();
     }
 
     public List<String> getHeaderNames(){
@@ -84,5 +87,9 @@ public class GrabberMessage <T extends Serializable> implements Serializable {
 
     static {
         reservedHeaders.add(VERSION_KEY);
+    }
+
+    public String getMessageId() {
+        return messageId;
     }
 }

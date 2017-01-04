@@ -9,7 +9,7 @@ import scala.collection.mutable.ArrayBuffer
 class GrabberClientBuilderSpec extends FunSpec with Matchers with GivenWhenThen with BeforeAndAfterEach
 {
   describe("GrabberClientBuilder instance") {
-    it("should construct GrabberClient correctly with default parameters") {
+    it("should construct GrabberClientV2 correctly with default parameters") {
       Given("no parameters are set")
       val grabberClientBuilder: GrabberClientBuilder = new GrabberClientBuilder
 
@@ -23,7 +23,7 @@ class GrabberClientBuilderSpec extends FunSpec with Matchers with GivenWhenThen 
 
     }
 
-    it("should construct GrabberClient correctly with provided parameters") {
+    it("should construct GrabberClientV2 correctly with provided parameters") {
       Given("valid parameters are set")
       val grabberClientBuilder: GrabberClientBuilder = new GrabberClientBuilder
       val stores: util.List[String] = ArrayBuffer("store").asJava

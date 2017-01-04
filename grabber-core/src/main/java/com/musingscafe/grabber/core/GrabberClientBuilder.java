@@ -23,10 +23,10 @@ public class GrabberClientBuilder {
         return this;
     }
 
-    public GrabberClient build() {
+    public GrabberClientV2 build() {
         dbPath = getDbPath();
         stores = getStores();
-        return new GrabberClient(dbPath, stores);
+        return new GrabberClientV2(dbPath, stores);
     }
 
     private List<String> getDefaultStores() {
