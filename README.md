@@ -1,5 +1,5 @@
 #Grabber
-A data collector which allows application servers to push data downstream servers without impacting application performance.
+A data collector which allows application servers to push data to downstream servers without impacting application performance.
  
 #Conventions
 - Will - P0
@@ -8,24 +8,22 @@ A data collector which allows application servers to push data downstream server
 - Grabber Server - GServer
 - Application Server - Application, AServer
 - Downstream Service and Storage - DService, DStorage
-- Grabber Message - GMessage
+- Grabber Message - GrabberMessage/GMessage
 
 ##Grabber Message
-GMessage will have header and body, similar to HTTP. Header will be a dictionary/map e.g. `Map<String, String>`. In the first version GClient
-will not provide any default serialization i.e. `Map<Object, Object>` will not be supported. 
+GrabberMessage will have header and body, similar to HTTP. Header will be a dictionary/map e.g. `Map<String, String>`. Body will be serialized using Java byte serialization (in first version) and no codec support will be provided. Application can do it itself as body will accept byte[], String and a Serializable object.
 
 AServer should be able to create a new GMessage and fill headers and body. 
 
 ```java
-GMessage message = new GMessage();
+GrabberMessage message = new GrabberMessage();
 message.addHeader(key, value);
 ```
   
 GMessage must handle encoding. This is important to handle different locales. This is because client may use Grabber to persist actual data.
 This can be required say for debugging or replaying a session. _**UTF-8** will be the default encoding.
 
-GMessage's body should be a serializable object. i.e. for Java it must implement Serializable. **(Abstract)** As a simple POJO can be serialized 
-into JSON by Jackson and then JSON String can be serialized into bytes. If we are providing serializer support then we can just try serializing the object and if it fails we can throw up.
+GMessage's body should be a serializable object. i.e. for Java it must implement Serializable. **(Abstract)** As a simple POJO can be serialized into JSON by Jackson and then JSON String can be serialized into bytes. If we are providing serializer support then we can just try serializing the object and if it fails we can throw up.
 
 ##Grabber Client
 - GClient **will** provide a easy to use API which will **loan the objects** to application code. 
