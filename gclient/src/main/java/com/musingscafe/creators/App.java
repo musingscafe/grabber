@@ -1,5 +1,6 @@
 package com.musingscafe.creators;
 
+import com.musingscafe.grabber.core.DefaultSerializer;
 import com.musingscafe.grabber.core.Employee;
 import com.musingscafe.grabber.core.GrabberClient;
 import com.musingscafe.grabber.core.channel.Channel;
@@ -8,13 +9,9 @@ import com.musingscafe.grabber.core.connectors.GrabberConnector;
 import com.musingscafe.grabber.core.connectors.ServerConfig;
 import com.musingscafe.grabber.core.consumers.Consumer;
 import com.musingscafe.grabber.core.consumers.PassThroughConsumer;
-import com.musingscafe.grabber.core.message.GrabberMessage;
-import com.musingscafe.grabber.core.message.Tuple;
+import com.musingscafe.grabber.core.GrabberMessage;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by ayadav on 11/17/16.
@@ -49,20 +46,21 @@ public class App {
         ServerConfig serverConfig = getServerConfig();
 
         ChannelBuilder builder = new ChannelBuilder();
-        channel = builder.setChannelIdentifier("user").setConnector(new GrabberConnector(serverConfig))
+        channel = builder.setChannelIdentifier("user").setConnector(new GrabberConnector(serverConfig, new DefaultSerializer()))
                 .setConsumers(new ArrayList<Consumer>() {{
                     add(new PassThroughConsumer());
-                }}).build();
+                }})
+                .setShouldExecuteSelf(true)
+                .build();
 
-        carChannel = builder.setChannelIdentifier("car").setConnector(new GrabberConnector(serverConfig))
+        carChannel = builder.setChannelIdentifier("car").setConnector(new GrabberConnector(serverConfig, new DefaultSerializer()))
                 .setConsumers(new ArrayList<Consumer>() {{
                     add(new PassThroughConsumer());
-                }}).build();
+                }})
+                .setShouldExecuteSelf(true)
+                .build();
 
-        channel.setExecuteSelf(true);
-        carChannel.setExecuteSelf(true);
-
-        GrabberClient.open(new ArrayList<Channel>() {{
+        GrabberClient.instance().open(new ArrayList<Channel>() {{
             add(channel);
             add(carChannel);
         }}, GrabberClient.DB_PATH);
@@ -86,12 +84,7 @@ public class App {
         employee.setId(1);
         employee.setName(UUID.randomUUID().toString());
 
-        LinkedHashMap<String, Object> fields = new LinkedHashMap<>();
-        fields.put("employee", employee);
-        Tuple tuple = new Tuple(fields);
-
-        GrabberMessage message = new GrabberMessage();
-        message.setContent(tuple);
+        GrabberMessage<Employee> message = new GrabberMessage<>(null, employee);
         grabberChannel.write(message);
     }
 }

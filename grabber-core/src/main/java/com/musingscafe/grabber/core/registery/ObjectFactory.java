@@ -3,7 +3,7 @@ package com.musingscafe.grabber.core.registery;
 import com.musingscafe.grabber.core.DefaultSerializer;
 import com.musingscafe.grabber.core.GrabberRepository;
 import com.musingscafe.grabber.core.Serializer;
-import com.musingscafe.grabber.core.ChannelConfig;
+import com.musingscafe.grabber.core.channel.ChannelConfig;
 import com.musingscafe.grabber.core.Producer;
 import com.musingscafe.grabber.core.RocksDbProducer;
 
@@ -37,12 +37,11 @@ public class ObjectFactory {
         return serializer;
     }
 
-    public Producer getRocksDbProducer(Serializer serializer, String channelIdentifier) {
+    public Producer getRocksDbProducer(Serializer serializer, GrabberRepository grabberRepository) {
         Producer producer = ServiceLocator.getServiceLocator()
                 .get(ServiceRegistry.ROCKS_DB_PRODUCER, RocksDbProducer.class);
         if (producer == null) {
-            producer = new RocksDbProducer(serializer, channelIdentifier,
-                                ServiceLocator.getServiceLocator().get(ServiceRegistry.GRABBER_REPOSITORY, GrabberRepository.class));
+            producer = new RocksDbProducer(serializer, grabberRepository);
             ServiceLocator.getServiceLocator().register(ServiceRegistry.ROCKS_DB_PRODUCER, producer);
         }
 

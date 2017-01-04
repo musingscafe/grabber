@@ -1,10 +1,13 @@
 package com.musingscafe.grabber.core;
 
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 
 /**
  * Created by ayadav on 1/4/17.
  */
+@Component
 public class DefaultSerializer implements Serializer{
     private static final byte SERIALIZATION_MODE_DEFAULT            = 0;
     private static final byte SERIALIZATION_MODE_JAVA               = 1;

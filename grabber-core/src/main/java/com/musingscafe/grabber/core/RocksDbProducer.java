@@ -1,5 +1,6 @@
 package com.musingscafe.grabber.core;
 
+import com.musingscafe.grabber.core.channel.ChannelConfig;
 import org.rocksdb.RocksIterator;
 import java.io.Closeable;
 import java.io.IOException;
@@ -12,29 +13,21 @@ import java.util.List;
  */
 public class RocksDbProducer implements Producer, Closeable{
     private final Serializer serializer;
-    private final String channelIdentifier;
     private final GrabberRepository repository;
     private RocksIterator iterator;
     private boolean hasSeekedFirst;
 
-    public RocksDbProducer(Serializer serializer, String channelIdentifier, GrabberRepository repository) {
+    public RocksDbProducer(Serializer serializer, GrabberRepository repository) {
         this.serializer = serializer;
-        this.channelIdentifier = channelIdentifier;
         this.repository = repository;
     }
 
-    private void seek() {
+    private void seek(String channelIdentifier) {
         if(!hasSeekedFirst){
-            this.iterator = repository.readColumn(this.channelIdentifier);
+            this.iterator = repository.readColumn(channelIdentifier);
             iterator.seekToFirst();
             hasSeekedFirst = true;
         }
-    }
-
-    public boolean isValid(){
-        seek();
-
-        return iterator.isValid();
     }
 
     @Override
@@ -57,23 +50,23 @@ public class RocksDbProducer implements Producer, Closeable{
         return keyValuePair;
     }
 
-    private KeyValuePair nullKeyValuePair(){
-        KeyValuePair keyValuePair = new KeyValuePair();
-        keyValuePair.setHasValue(false);
-        return keyValuePair;
+    private GrabberMessage getMessage(RocksIterator iterator){
+        byte[] key = iterator.key();
+        byte[] value = iterator.value();
+        return (GrabberMessage) serializer.deserialize(value);
     }
 
     @Override
-    public List<KeyValuePair> getBatch() {
-        seek();
+    public List<GrabberMessage> getBatch(ChannelConfig channelConfig) {
+        seek(channelConfig.getChannelIdentifier());
 
-        List<KeyValuePair> list = new ArrayList<>();
+        List<GrabberMessage> list = new ArrayList<>();
 
         if (iterator.isValid()){
-            KeyValuePair keyValuePair = newKeyValuePair(iterator);
+            GrabberMessage grabberMessage = getMessage(iterator);
             iterator.next();
 
-            list.add(keyValuePair);
+            list.add(grabberMessage);
         }
 
         iterator.close();

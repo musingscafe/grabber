@@ -32,15 +32,13 @@ public class MessageExecutor implements MessageCompletionHandler {
     }
 
 
-    public void handle(String key, GrabberMessage message) {
+    public void handle(GrabberMessage message) {
         GrabberMessage grabberMessage = message;
-        if(consumers.size() > 0) {
-
+        if (consumers != null) {
             for (int i = 0; i < consumers.size(); i++) {
                 grabberMessage = consumers.get(i).handle(grabberMessage);
             }
         }
-
         connector.handle(grabberMessage, this);
     }
 }

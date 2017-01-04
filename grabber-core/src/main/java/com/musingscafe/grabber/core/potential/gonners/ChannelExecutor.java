@@ -1,9 +1,11 @@
-package com.musingscafe.grabber.core.channel;
+package com.musingscafe.grabber.core.potential.gonners;
 
 import com.musingscafe.grabber.core.GrabberRepository;
 import com.musingscafe.grabber.core.KeyValuePair;
 import com.musingscafe.grabber.core.Producer;
 import com.musingscafe.grabber.core.GrabberMessage;
+import com.musingscafe.grabber.core.channel.ChannelConfig;
+import com.musingscafe.grabber.core.channel.MessageExecutor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
@@ -44,22 +46,22 @@ public class ChannelExecutor {
     }
 
     //write to db
-    public void write(GrabberMessage message){
-        grabberRepository.save(channelExecutionContext.getChannelIdentifier(), message);
+    public void write(GrabberMessage message, ChannelConfig channelConfig){
+        grabberRepository.save(channelConfig.getChannelIdentifier(), message);
     }
 
-    public void produce(){
-        List<KeyValuePair> list = producer.getBatch();
-
-        for (KeyValuePair keyValuePair: list) {
-            //submit
-            messageExecutor.handle(keyValuePair.getKey() ,keyValuePair.getValue());
-        }
-
-        int i = 0;
-        while (!deletionQueue.isEmpty()){
-            String key = deletionQueue.remove(i);
-            grabberRepository.remove(channelExecutionContext.getChannelIdentifier(), key.getBytes(StandardCharsets.ISO_8859_1));
-        }
-    }
+//    public void produce(ChannelConfig channelConfig){
+//        List<KeyValuePair> list = producer.getBatch(channelConfig);
+//
+//        for (KeyValuePair keyValuePair: list) {
+//            //submit
+//            messageExecutor.handle(keyValuePair.getKey() ,keyValuePair.getValue());
+//        }
+//
+//        int i = 0;
+//        while (!deletionQueue.isEmpty()){
+//            String key = deletionQueue.remove(i);
+//            grabberRepository.remove(channelConfig.getChannelIdentifier(), key.getBytes(StandardCharsets.ISO_8859_1));
+//        }
+//    }
 }
