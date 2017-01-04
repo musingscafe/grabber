@@ -1,44 +1,30 @@
 package com.musingscafe.grabber.core;
 
-import com.musingscafe.grabber.core.channel.Channel;
-import com.musingscafe.grabber.core.executors.Executor;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 
-import java.io.Closeable;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ayadav on 11/17/16.
+ * Created by ayadav on 1/4/17.
  */
-public class GrabberClient implements Closeable {
-    private static final GrabberClient client = new GrabberClient();
-    public static String DB_PATH = "grabber.db";
+public class GrabberClient {
     private String dbPath;
+    private List<String> stores;
 
-    private GrabberClient(){
+    public GrabberClient(String dbPath, List<String> stores) {
+        Validate.notNull(dbPath);
+        Validate.notNull(stores);
+
+        this.dbPath = dbPath;
+        this.stores = stores;
     }
 
-    public static GrabberClient open(List<Channel> channels, String dbPath){
-        assert(channels != null);
-        assert(channels.size() > 0);
-
-        client.dbPath = dbPath;
-
-        setupEnvironment(channels, client.dbPath);
-        return client;
+    public String getDbPath() {
+        return dbPath;
     }
 
-    private static void setupEnvironment(List<Channel> channels, String dbPath) {
-        String path = dbPath;
-        if(StringUtils.isEmpty(path)){
-            path = DB_PATH;
-        }
-        Executor.open(channels, path);
-    }
-
-    @Override
-    public void close() throws IOException {
-        //handle gracefully
+    public List<String> getStores() {
+        return stores;
     }
 }
