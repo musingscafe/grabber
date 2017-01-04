@@ -1,3 +1,5 @@
+![Build Status](https://travis-ci.org/musingscafe/grabber.svg?branch=master)
+
 #Grabber
 A data collector which allows application servers to push data to downstream servers without impacting application performance.
  
