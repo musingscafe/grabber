@@ -92,4 +92,8 @@ public class GrabberMessage <T extends Serializable> implements Serializable {
     public String getMessageId() {
         return messageId;
     }
+
+    public T getBody() {
+        return body;
+    }
 }

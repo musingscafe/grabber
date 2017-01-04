@@ -3,7 +3,7 @@ package com.musingscafe.grabber.handlers;
 import com.musingscafe.grabber.channels.Registrar;
 import com.musingscafe.grabber.core.GrabberClient;
 import com.musingscafe.grabber.core.channel.Channel;
-import com.musingscafe.grabber.core.message.GrabberMessage;
+import com.musingscafe.grabber.core.GrabberMessage;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;

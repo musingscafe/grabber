@@ -1,7 +1,7 @@
 package com.musingscafe.grabber.verticles;
 
 import com.musingscafe.grabber.core.Employee;
-import com.musingscafe.grabber.core.message.GrabberMessage;
+import com.musingscafe.grabber.core.GrabberMessage;
 import com.musingscafe.grabber.handlers.ByteRequestHandler;
 import com.musingscafe.grabber.handlers.JsonRequestHandler;
 import io.vertx.core.AbstractVerticle;
@@ -51,7 +51,7 @@ public class GrabberVertical extends AbstractVerticle {
             byte[] bytes = buffer.getBytes();
 
             GrabberMessage message = (GrabberMessage) SerializationUtils.deserialize(bytes);
-            Employee employee = message.getContent().getObject(0, Employee.class);
+            Employee employee = (Employee) SerializationUtils.deserialize(bytes);
             System.out.println(employee.getName());
 
             ByteRequestHandler.handle(message);

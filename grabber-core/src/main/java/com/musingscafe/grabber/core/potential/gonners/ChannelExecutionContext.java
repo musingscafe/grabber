@@ -1,6 +1,7 @@
-package com.musingscafe.grabber.core.channel;
+package com.musingscafe.grabber.core.potential.gonners;
 
 import com.musingscafe.grabber.core.Serializer;
+import com.musingscafe.grabber.core.channel.ChannelConfig;
 import com.musingscafe.grabber.core.connectors.Connector;
 import com.musingscafe.grabber.core.consumers.Consumer;
 
@@ -10,28 +11,19 @@ import java.util.List;
  * Created by ayadav on 11/15/16.
  */
 public class ChannelExecutionContext {
-    private String channelIdentifier;
+    private ChannelConfig channelConfig;
     private Serializer serializer;
     private List<Consumer> consumers;
     private Connector connector;
 
-    public ChannelExecutionContext(String channelIdentifier,
+    public ChannelExecutionContext(ChannelConfig channelConfig,
                                    List<Consumer> consumers,
                                    Connector connector,
                                    Serializer serializer){
-        this.channelIdentifier = channelIdentifier;
+        this.channelConfig = channelConfig;
         this.serializer = serializer;
         this.consumers = consumers;
         this.connector = connector;
-    }
-
-
-    public String getChannelIdentifier() {
-        return channelIdentifier;
-    }
-
-    public void setChannelIdentifier(String channelIdentifier) {
-        this.channelIdentifier = channelIdentifier;
     }
 
     public List<Consumer> getConsumers() {
@@ -44,5 +36,9 @@ public class ChannelExecutionContext {
 
     public Serializer getSerializer() {
         return serializer;
+    }
+
+    public ChannelConfig getChannelConfig() {
+        return channelConfig;
     }
 }

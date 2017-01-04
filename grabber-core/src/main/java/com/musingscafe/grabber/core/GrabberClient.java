@@ -1,11 +1,18 @@
 package com.musingscafe.grabber.core;
 
-import com.musingscafe.grabber.core.executors.Executor;
+import com.musingscafe.grabber.core.channel.Channel;
+import com.musingscafe.grabber.core.channel.ChannelConfig;
+import com.musingscafe.grabber.core.potential.gonners.Executor;
+import com.musingscafe.grabber.core.registery.ObjectFactory;
+import com.musingscafe.grabber.core.registery.ServiceLocator;
+import com.musingscafe.grabber.core.registery.ServiceRegistry;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by ayadav on 11/17/16.
@@ -14,26 +21,51 @@ public class GrabberClient implements Closeable {
     private static final GrabberClient client = new GrabberClient();
     public static String DB_PATH = "grabber.db";
     private String dbPath;
+    private List<Channel> channels;
 
-    private GrabberClient(){
-    }
+    private GrabberClient(){}
 
-    public static GrabberClient open(List<Channel> channels, String dbPath){
-        assert(channels != null);
-        assert(channels.size() > 0);
-
-        client.dbPath = dbPath;
-
-        setupEnvironment(channels, client.dbPath);
+    public static GrabberClient instance() {
         return client;
     }
 
-    private static void setupEnvironment(List<Channel> channels, String dbPath) {
-        String path = dbPath;
-        if(StringUtils.isEmpty(path)){
-            path = DB_PATH;
-        }
-        //Executor.open(channels, path);
+    public GrabberClient open(List<Channel> channels, String dbPath){
+        setupEnvironment(channels, dbPath);
+        return client;
+    }
+
+    private void setupEnvironment(List<Channel> channels, String dbPath) {
+        setupDbPath(dbPath);
+        setChannelProperties(channels);
+    }
+
+    private void setupDbPath(String dbPath) {
+        client.dbPath = StringUtils.isEmpty(dbPath) ? DB_PATH : dbPath;
+    }
+
+    private void setChannelProperties (List<Channel> channels) {
+        client.channels = channels;
+
+        final ObjectFactory objectFactory = ServiceLocator.getServiceLocator().get(ServiceRegistry.OBJECT_FACTORY, ObjectFactory.class);
+        final Serializer serializer = objectFactory.getDefaultSerializer();
+        final List<ChannelConfig> channelConfigs = getChannelConfigs(channels);
+        final GrabberRepository grabberRepository = objectFactory.getRepository(dbPath, channelConfigs, serializer);
+        final Producer producer = objectFactory.getRocksDbProducer(serializer, grabberRepository);
+
+        channels.stream()
+                .forEach(
+                        channel -> {
+                            channel.getChannelConfig().setGrabberRepository(grabberRepository);
+                            channel.getChannelConfig().setProducer(producer);
+                        }
+                );
+    }
+
+    private List<ChannelConfig> getChannelConfigs(List<Channel> channels) {
+        return channels.stream()
+                .map(channel -> channel.getChannelConfig())
+                .collect(Collectors.toList());
+
     }
 
     @Override

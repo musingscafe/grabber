@@ -1,4 +1,4 @@
-package com.musingscafe.grabber.core;
+package com.musingscafe.grabber.old;
 
 import org.apache.commons.lang.Validate;
 

@@ -1,5 +1,6 @@
 package com.musingscafe.grabber.core;
 
+import com.musingscafe.grabber.core.channel.ChannelConfig;
 import org.rocksdb.*;
 
 import java.io.Closeable;

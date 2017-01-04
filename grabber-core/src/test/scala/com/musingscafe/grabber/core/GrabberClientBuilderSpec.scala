@@ -1,8 +1,10 @@
 package com.musingscafe.grabber.core
 
 import org.scalatest.{BeforeAndAfterEach, FunSpec, GivenWhenThen, Matchers}
-
 import java.util
+
+import com.musingscafe.grabber.old.GrabberClientBuilder
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 
