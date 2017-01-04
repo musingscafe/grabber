@@ -2,5 +2,5 @@ language: java
 
 jdk:
   - oraclejdk8
-  
-script: cd grabber-core && mvn clean install
+
+script: cd grabber-core && mvn install
