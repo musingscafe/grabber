@@ -2,6 +2,7 @@ package com.musingscafe.grabber.core;
 
 import com.musingscafe.grabber.core.channel.Channel;
 import com.musingscafe.grabber.core.channel.ChannelConfig;
+import com.musingscafe.grabber.core.registry.Grabber;
 import com.musingscafe.grabber.core.registry.ObjectFactory;
 import com.musingscafe.grabber.core.registry.ServiceLocator;
 import com.musingscafe.grabber.core.registry.ServiceRegistry;
@@ -28,6 +29,7 @@ public class GrabberClient implements Closeable {
     }
 
     public GrabberClient open(List<Channel> channels, String dbPath){
+        Grabber.initialize();
         setupEnvironment(channels, dbPath);
         return client;
     }
@@ -46,8 +48,7 @@ public class GrabberClient implements Closeable {
 
         final ObjectFactory objectFactory = ServiceLocator.getServiceLocator().get(ServiceRegistry.OBJECT_FACTORY, ObjectFactory.class);
         final Serializer serializer = objectFactory.getDefaultSerializer();
-        final List<ChannelConfig> channelConfigs = getChannelConfigs(channels);
-        final GrabberRepository grabberRepository = objectFactory.getRepository(dbPath, channelConfigs, serializer);
+        final GrabberRepository grabberRepository = objectFactory.getRepository(dbPath, getChannelIdentifiers(client.channels), serializer);
         final Producer producer = objectFactory.getRocksDbProducer(serializer, grabberRepository);
 
         channels.stream()
@@ -59,9 +60,9 @@ public class GrabberClient implements Closeable {
                 );
     }
 
-    private List<ChannelConfig> getChannelConfigs(List<Channel> channels) {
+    private List<String> getChannelIdentifiers(List<Channel> channels) {
         return channels.stream()
-                .map(channel -> channel.getChannelConfig())
+                .map(channel -> channel.getChannelConfig().getChannelIdentifier())
                 .collect(Collectors.toList());
 
     }
