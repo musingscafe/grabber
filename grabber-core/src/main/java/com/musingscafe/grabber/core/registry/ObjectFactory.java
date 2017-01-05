@@ -9,17 +9,14 @@ import com.musingscafe.grabber.core.RocksDbProducer;
 
 import java.util.List;
 
-/**
- * Created by ayadav on 1/4/17.
- */
 public class ObjectFactory {
     public GrabberRepository getRepository(String databasePath,
-                                           List<ChannelConfig> channelConfigs,
+                                           List<String> channelIdentifiers,
                                            Serializer serializer) {
         GrabberRepository grabberRepository = ServiceLocator.getServiceLocator()
                                                 .get(ServiceRegistry.GRABBER_REPOSITORY, GrabberRepository.class);
         if (grabberRepository == null) {
-            grabberRepository = new GrabberRepository(databasePath, channelConfigs, serializer);
+            grabberRepository = new GrabberRepository(databasePath, channelIdentifiers, serializer);
             ServiceLocator.getServiceLocator().register(ServiceRegistry.GRABBER_REPOSITORY, grabberRepository);
         }
 

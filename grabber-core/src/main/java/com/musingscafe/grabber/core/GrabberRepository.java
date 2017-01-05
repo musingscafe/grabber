@@ -19,13 +19,13 @@ public class GrabberRepository implements Closeable {
     private final Map<String, ColumnFamilyHandle> columnFamilyHandleMap = new HashMap<>();
     private RocksDB database;
     private DBOptions dbOptions;
-    private final List<ChannelConfig> channelConfigs;
+    private final List<String> channelIdentifiers;
     private final String databasePath;
     private ColumnFamilyHandle defaultColumnFamilyHandle;
     private Serializer serializer;
 
-    public GrabberRepository(String databasePath, List<ChannelConfig> channelConfigs, Serializer serializer){
-        this.channelConfigs = channelConfigs;
+    public GrabberRepository(String databasePath, List<String> channelIdentifiers, Serializer serializer){
+        this.channelIdentifiers = channelIdentifiers;
         this.databasePath = databasePath;
         this.serializer = serializer;
 
@@ -90,8 +90,8 @@ public class GrabberRepository implements Closeable {
 
     private void setupHandleMap() {
         //TODO: no check
-        for (int i = 0; i < channelConfigs.size(); i++) {
-            columnFamilyHandleMap.put(channelConfigs.get(i).getChannelIdentifier(),
+        for (int i = 0; i < channelIdentifiers.size(); i++) {
+            columnFamilyHandleMap.put(channelIdentifiers.get(i),
                     columnFamilyHandles.get(i));
         }
     }
@@ -101,8 +101,8 @@ public class GrabberRepository implements Closeable {
      */
     private void setUpChannels(){
         columnFamilyDescriptors.add(grabberColumnFamilyDescriptor);
-        for(ChannelConfig channelConfig: channelConfigs){
-            columnFamilyDescriptors.add(newColumnFamilyDescriptor(channelConfig.getChannelIdentifier()));
+        for(String channelIdentifier: channelIdentifiers){
+            columnFamilyDescriptors.add(newColumnFamilyDescriptor(channelIdentifier));
         }
     }
 

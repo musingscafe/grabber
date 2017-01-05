@@ -7,9 +7,7 @@ public class ServiceLocator {
     private static ServiceLocator serviceLocator = new ServiceLocator();
     private final Map<String, Object> objectMap = new HashMap<>();
 
-    private ServiceLocator(){
-        ServiceLocator.getServiceLocator().register(ServiceRegistry.OBJECT_FACTORY, new ObjectFactory());
-    }
+    private ServiceLocator(){}
 
     public void register(String key, Object object){
         objectMap.put(key, object);
