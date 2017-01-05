@@ -1,4 +1,4 @@
-package com.musingscafe.grabber.core.registery;
+package com.musingscafe.grabber.core.registry;
 
 import com.musingscafe.grabber.core.DefaultSerializer;
 import com.musingscafe.grabber.core.GrabberRepository;

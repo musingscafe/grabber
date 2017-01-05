@@ -1,4 +1,4 @@
-package com.musingscafe.grabber.core;
+package com.musingscafe.grabber.core.potential.gonners;
 
 import com.musingscafe.grabber.core.GrabberMessage;
 

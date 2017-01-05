@@ -1,4 +1,4 @@
-package com.musingscafe.grabber.core.registery;
+package com.musingscafe.grabber.core.registry;
 
 /**
  * Created by ayadav on 1/4/17.

@@ -1,4 +1,4 @@
-package com.musingscafe.grabber.core.registery;
+package com.musingscafe.grabber.core.registry;
 
 import java.util.HashMap;
 import java.util.Map;

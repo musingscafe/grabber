@@ -44,11 +44,10 @@ public class Channel {
     public void produce(ChannelConfig channelConfig){
         List<GrabberMessage> list = channelConfig.getProducer().getBatch(channelConfig);
 
-        for (GrabberMessage grabberMessage: list) {
-            //submit
-            messageExecutor.handle(grabberMessage);
-        }
+        list.stream()
+                .forEach(grabberMessage -> messageExecutor.handle(grabberMessage));
 
+        //TODO: debug why we wrote this one. Why i is only set to 0?
         int i = 0;
         while (!deletionQueue.isEmpty()){
             String key = deletionQueue.remove(i);
