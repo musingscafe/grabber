@@ -1,6 +1,7 @@
 package com.musingscafe.grabber.core;
 
 import com.musingscafe.grabber.core.channel.ChannelConfig;
+import com.musingscafe.grabber.core.potential.gonners.KeyValuePair;
 import org.rocksdb.RocksIterator;
 import java.io.Closeable;
 import java.io.IOException;

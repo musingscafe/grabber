@@ -90,8 +90,14 @@
       <version>3.4</version>
       <scope>test</scope>
     </dependency>
-    <!--Scala test dependencies ends-->
+    <!-- https://mvnrepository.com/artifact/org.scalatest/scalatest-maven-plugin -->
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest-maven-plugin</artifactId>
+      <version>1.0</version>
+    </dependency>
 
+    <!--Scala test dependencies ends-->
   </dependencies>
 
   <pluginRepositories>
@@ -124,6 +130,24 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-maven-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+          <junitxml>.</junitxml>
+          <filereports>WDF TestSuite.txt</filereports>
+        </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
@@ -159,6 +183,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.19.1</version>
         <configuration>
+          <skipTests>true</skipTests>
           <useFile>false</useFile>
           <disableXmlReport>true</disableXmlReport>
           <includes>
