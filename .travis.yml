@@ -3,7 +3,7 @@ language: java
 jdk:
   - oraclejdk8
 
-script: cd grabber-core && mvn clean install && mvn test
+script: cd grabber-core && mvn test
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
