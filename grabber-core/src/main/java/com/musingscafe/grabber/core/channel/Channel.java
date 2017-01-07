@@ -14,21 +14,23 @@ import java.util.concurrent.TimeUnit;
  * Created by ayadav on 11/15/16.
  */
 public class Channel {
+
     private ChannelConfig channelConfig;
     private MessageExecutor messageExecutor;
     private List<String> deletionQueue = new LinkedList<>();
     private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
     public Channel(ChannelConfig channelConfig) {
         this.channelConfig = channelConfig;
         this.messageExecutor = newMessageExecutor();
 
-        if(this.channelConfig.isShouldExecuteSelf()){
-            scheduledExecutorService.scheduleWithFixedDelay(() -> produce(channelConfig), 100, 100, TimeUnit.MILLISECONDS);
+        if(this.channelConfig.isShouldExecuteSelf()) {
+            scheduledExecutorService.scheduleWithFixedDelay(() -> produce(), 100, 100, TimeUnit.MILLISECONDS);
         }
     }
 
     //write to db
-    public void write(GrabberMessage message){
+    public void write(GrabberMessage message) {
         final GrabberRepository grabberRepository = channelConfig.getGrabberRepository();
         grabberRepository.save(channelConfig.getChannelIdentifier(), message);
     }
@@ -41,7 +43,7 @@ public class Channel {
         return new MessageExecutor(channelConfig.getConsumers(), channelConfig.getConnector(), deletionQueue, channelConfig.getGrabberRepository());
     }
 
-    public void produce(ChannelConfig channelConfig){
+    public void produce() {
         List<GrabberMessage> list = channelConfig.getProducer().getBatch(channelConfig);
 
         list.stream()
