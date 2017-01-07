@@ -15,6 +15,19 @@
     <spring-framework.version>4.2.6.RELEASE</spring-framework.version>
   </properties>
 
+    <!-- SCM and CONTINUOUS INTEGRATION URLS -->
+    <scm>
+        <url>https://github.com/musingscafe/grabber/</url>
+        <connection>SSL</connection>
+        <developerConnection>scm:git:https://github.com/musingscafe/grabber/</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <ciManagement>
+        <url>https://travis-ci.org/musingscafe/grabber/</url>
+        <system>Travis</system>
+    </ciManagement>
+
+    <!-- LIBRARY DEPENDENCIES -->
   <dependencies>
 
     <dependency>
@@ -93,6 +106,7 @@
     <!--Scala test dependencies ends-->
   </dependencies>
 
+    <!--
   <pluginRepositories>
     <pluginRepository>
       <id>scala</id>
@@ -107,6 +121,7 @@
     </pluginRepository>
   </pluginRepositories>
 
+
   <repositories>
     <repository>
       <id>scala</id>
@@ -120,9 +135,95 @@
       </snapshots>
     </repository>
   </repositories>
+  -->
 
   <build>
-    <plugins>
+      <sourceDirectory>src/main</sourceDirectory>
+      <testSourceDirectory>src/test</testSourceDirectory>
+      <resources>
+          <resource>
+              <directory>src/resource</directory>
+              <excludes>
+                  <exclude>**/*.java</exclude>
+              </excludes>
+          </resource>
+      </resources>
+      <pluginManagement>
+          <plugins>
+              <plugin>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>3.3</version>
+                  <configuration>
+                      <source>1.8</source>
+                      <target>1.8</target>
+                  </configuration>
+              </plugin>
+              <plugin>
+                  <!-- Used to get eclipse to ignore the jacoco part of the build process
+                      when it builds the project internally. jacoco is only used if you run through
+                      an external maven client, which prevents it being run on every save. -->
+                  <groupId>org.eclipse.m2e</groupId>
+                  <artifactId>lifecycle-mapping</artifactId>
+                  <version>1.0.0</version>
+                  <configuration>
+                      <lifecycleMappingMetadata>
+                          <pluginExecutions>
+                              <pluginExecution>
+                                  <pluginExecutionFilter>
+                                      <groupId>org.jacoco</groupId>
+                                      <artifactId>jacoco-maven-plugin</artifactId>
+                                      <versionRange>[0.0.1,)</versionRange>
+                                      <goals>
+                                          <goal>prepare-agent</goal>
+                                      </goals>
+                                  </pluginExecutionFilter>
+                                  <action>
+                                      <ignore />
+                                  </action>
+                              </pluginExecution>
+                          </pluginExecutions>
+                      </lifecycleMappingMetadata>
+                  </configuration>
+              </plugin>
+          </plugins>
+      </pluginManagement>
+
+      <plugins>
+
+
+          <plugin>
+              <!-- CODE COVERAGE -->
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.7.4.201502262128</version>
+              <executions>
+                  <!-- Prepare execution with Surefire -->
+                  <execution>
+                      <id>pre-unit-test</id>
+                      <goals>
+                          <goal>prepare-agent</goal>
+                      </goals>
+                      <configuration>
+                          <propertyName>surefireArgLine</propertyName>
+                      </configuration>
+                  </execution>
+                  <!-- Generate report after tests are run -->
+                  <execution>
+                      <id>post-unit-test</id>
+                      <phase>test</phase>
+                      <goals>
+                          <goal>report</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <!-- Specify classes to ignore in code coverage -->
+              <configuration>
+                  <excludes>
+                      <exclude>**/ui/**</exclude>
+                  </excludes>
+              </configuration>
+          </plugin>
+
       <plugin>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest-maven-plugin</artifactId>
@@ -141,6 +242,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
@@ -171,6 +273,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -193,18 +296,49 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.7</version>
-            <configuration>
-                <formats>
-                    <format>html</format>
-                    <format>xml</format>
-                </formats>
-                <check />
-            </configuration>
-        </plugin>
+
+          <!--  INTEGRATION TEST RUNNER -->
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-report-plugin</artifactId>
+              <version>2.18.1</version>
+          </plugin>
+          <!-- CODE COVERAGE PUBLISHER -->
+          <plugin>
+              <groupId>org.eluder.coveralls</groupId>
+              <artifactId>coveralls-maven-plugin</artifactId>
+              <version>3.1.0</version>
+          </plugin>
     </plugins>
   </build>
+
+    <!-- REPORTING - generated with 'mvn site' call -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.18.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
