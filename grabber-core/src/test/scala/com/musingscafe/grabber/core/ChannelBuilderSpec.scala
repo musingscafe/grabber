@@ -25,7 +25,7 @@ class ChannelBuilderSpec extends FunSpec with Matchers with GivenWhenThen with B
 
         When("build is called")
         val channel = channelBuilder.setChannelIdentifier(channelIdentifier)
-          .setConnector(connector).setConsumers(consumers).setShouldExecuteSelf(true).build()
+          .setConnector(connector).setConsumers(consumers).setShouldExecuteSelf(false).build()
 
         Then("valid Channel is returned")
         channel should not be(null)

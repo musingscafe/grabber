@@ -68,7 +68,7 @@ class GrabberClientSpec extends FunSpec with Matchers with GivenWhenThen with Be
       val consumer = EasyMockSugar.mock[Consumer]
       val consumers: util.List[Consumer] = ArrayBuffer(consumer).asJava
       val connector = EasyMockSugar.mock[Connector]
-      val channelConfig = new ChannelConfig(String.valueOf(int), consumers, connector, true)
+      val channelConfig = new ChannelConfig(String.valueOf(int), consumers, connector, false)
       channelConfig
     }
 
