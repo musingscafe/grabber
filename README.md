@@ -1,4 +1,4 @@
-![Build Status](https://travis-ci.org/musingscafe/grabber.svg?branch=master)
+![Build Status](https://travis-ci.org/musingscafe/grabber.svg?branch=master) ![Code Coverage](https://codecov.io/gh/musingscafe/grabber/badge.png?branch=master)
 
 #Grabber
 A data collector which allows application servers to push data to downstream servers without impacting application performance.
