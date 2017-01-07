@@ -207,6 +207,13 @@
                           <propertyName>surefireArgLine</propertyName>
                       </configuration>
                   </execution>
+                  <execution>
+                      <id>default-report</id>
+                      <phase>prepare-package</phase>
+                      <goals>
+                          <goal>report</goal>
+                      </goals>
+                  </execution>
                   <!-- Generate report after tests are run -->
                   <execution>
                       <id>post-unit-test</id>
@@ -274,19 +281,29 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19.1</version>
-        <configuration>
-          <skipTests>true</skipTests>
-          <useFile>false</useFile>
-          <disableXmlReport>true</disableXmlReport>
-          <includes>
-            <include>**/*Spec.*</include>
-            <include>**/*Test.*</include>
-          </includes>
-        </configuration>
+          <plugin>
+              <!-- UNIT TEST RUNNER -->
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.19.1</version>
+              <configuration>
+                  <argLine>${surefireArgLine}</argLine>
+                  <includes>
+                      <include>**/*Test.*</include>
+                      <include>**/*Tests.*</include>
+                      <include>**/*Spec.*</include>
+                      <include>**/*Spec.*</include>
+                  </includes>
+              </configuration>
+              <executions>
+                  <execution>
+                      <id>run-unit-tests</id>
+                      <goals>
+                          <goal>test</goal>
+                      </goals>
+
+                  </execution>
+              </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
